@@ -1,4 +1,4 @@
-package com.github.jwoschitz.avro.tool.utils;
+package com.github.jwoschitz.avro.count.utils;
 
 import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;

@@ -1,6 +1,4 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '1.2.4'
-    id 'co.riiid.gradle' version '0.4.2'
     id 'java'
     id 'maven'
     id 'idea'
@@ -12,51 +10,13 @@ repositories {
     jcenter()
 }
 
-shadowJar {
-    manifest {
-        attributes 'Main-Class': 'com.github.jwoschitz.avro.tool.AvroCountTool'
-    }
-    classifier = null
-}
-
 dependencies {
-    compile 'ch.qos.logback:logback-classic:1.1.8'
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
 
-    compile ('org.apache.avro:avro-tools:1.8.2') {
-        exclude group: 'org.slf4j'
-        exclude group: 'org.apache.logging.log4j'
-        exclude group: 'log4j'
-    }
-
-    compile ('net.java.dev.jets3t:jets3t:0.9.4') {
-        exclude group: 'org.slf4j'
-        exclude group: 'org.apache.logging.log4j'
-        exclude group: 'log4j'
-    }
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.apache.avro:avro:1.8.1:tests'
+    // the client needs to specify their own avro dependency
+    compileOnly "org.apache.avro:avro:$avroVersion"
+    
+    testCompile "org.apache.avro:avro:$avroVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.apache.avro:avro:$avroVersion:tests"
 }
-
-github {
-    owner = 'jwoschitz'
-    repo = 'avrocount'
-    token = project.hasProperty('githubToken') ? githubToken : '-'
-    tagName = project.version
-    targetCommitish = 'master'
-    name = project.version
-    body = 'Release v' + project.version
-    assets = [
-        shadowJar.getArchivePath()
-    ]
-}
-
-jar.enabled = false
-
-artifacts {
-    shadowJar;
-}
-
-build.dependsOn(shadowJar);
-
-githubRelease.dependsOn(build);
